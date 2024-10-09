@@ -1,14 +1,19 @@
+const { AppError } = require("../middleware/handleError");
 const users = require("../models/users");
 const sendSmsOtp = require("../services/sentOTP");
 const { generateToken, verifyToken } = require("../services/tokenAuth");
 
 
-const verifyOTPAndlogin = async (req, res, next) => {
+const verifyOTPAndlogin = async (req, res,next) => {
     const bearerToken = req.headers['authorization'];
 
     const token = bearerToken?.split(" ")[1];
-    const { id } = verifyToken(token, next);
+    const { id } = verifyToken(token);
 
+    if(id === "invalid token"){
+        return next(new AppError(400, "Invalid token"));
+    }
+    
     const { otp: userOTP } = req.body;
 
     const userByPk = await users.findByPk(id, 
@@ -24,18 +29,12 @@ const verifyOTPAndlogin = async (req, res, next) => {
     console.log(OtpExpiryTime);
 
     if (OtpExpiryTime > 120) {
-        return res.status(200).json({
-            status: "Failure",
-            message: "OTP expired",
-        });
+        return next(new AppError(400, "OTP expired"));
     }
 
 
     if (userByPk.otp !== userOTP) {
-        return res.status(200).json({
-            status: "Failure",
-            message: "Wrong OTP",
-        });
+        return next(new AppError(400, "Wrong OTP"));
     }
 
     const loginToken = generateToken(userByPk.id, "365d");
@@ -71,7 +70,7 @@ const sendOTP = async (req, res) => {
 
     if (!result) {
         return res.status(404).json({
-            statu: "Success",
+            status: "Success",
             message: "Mobile number not found",
         });
     }
