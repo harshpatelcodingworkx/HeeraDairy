@@ -1,9 +1,10 @@
 import express from 'express';
-import { login } from '../controller/loginController';
+import { login, sendOTP } from '../controller/loginController';
 
 
 
 const router = express.Router();
-router.get("/login",login )
+router.post("/verifyotpandlogin", login);
+router.post("/sendotp", sendOTP);
 
 export default router;
