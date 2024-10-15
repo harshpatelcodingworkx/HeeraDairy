@@ -24,7 +24,7 @@ const sendOTP = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const token = generateToken(user.id, "5minutes");
-    // sendSms(phoneNo, otp);
+    sendSms(phoneNo, otp);
 
     await userRepo.update(user.id, {
         otp: otp.toString(),
