@@ -1,4 +1,4 @@
-import {    Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 type UserRoleType = "0" | "1" | "2" // 0-> admin 1 ->manager 2-> user
 

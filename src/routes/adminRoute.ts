@@ -1,10 +1,12 @@
 import express from 'express';
 import { addUser } from '../controller/adminController';
+import { validate } from '../middlewares/validator';
+import { addUserSchema } from '../schemas/validationSchema';
 
 
 
 
 const router = express.Router();
-router.post("/adduser", addUser);
+router.post("/adduser", validate(addUserSchema),addUser);
 
 export default router;

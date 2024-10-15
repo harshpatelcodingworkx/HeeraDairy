@@ -1,5 +1,4 @@
 import jwt, { Secret, JwtPayload} from 'jsonwebtoken';
-import { BackendError } from '../middlewares/errorHandling';
 
 const SECRET_KEY : Secret = process.env.SECRET_KEY? process.env.SECRET_KEY : 'something';
 
@@ -19,13 +18,8 @@ const generateToken = (userId : number , expire : string ) : string =>{
 
 
 const verifyToken = (token : string) =>{
-    try {
-        const payload  = jwt.verify(token, SECRET_KEY);
-        return payload as myPayload;
-    } catch (err : any) {
-        throw new BackendError(400 , err.stack?.split('\n')[0].split(":")[1]);
-        
-    }
+    const payload  = jwt.verify(token, SECRET_KEY);
+    return payload as myPayload;
 }
 
 export{
