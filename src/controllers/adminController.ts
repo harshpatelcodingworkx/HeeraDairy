@@ -6,12 +6,21 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { firstName, lastName, phoneNo, userType = 2 } = req.body;
 
+        const existingPhoneNo = await user.findOne({
+            phoneNo:phoneNo
+        });
+
+        if(existingPhoneNo){
+            return next(new BackendError(500, "Number already exist"));
+        }
+        
         const result = await user.create({
             firstName,
             lastName,
             phoneNo,
             userType,
         });
+
 
         if (!result) {
             return next(new BackendError(500, "Unable to add user"));

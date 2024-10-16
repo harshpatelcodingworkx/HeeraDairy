@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, set } from 'mongoose';
 
 
 interface IUser {
@@ -22,6 +22,7 @@ const userSchema = new Schema<IUser>({
     },
     phoneNo: {
         type: String,
+        unique:true,
         required: true,
     },
     profilePicture: {
@@ -43,7 +44,16 @@ const userSchema = new Schema<IUser>({
 },
     {
         timestamps: true
-    });
+    }
+);
 
+// function setTime(value : string) : string{
+//     console.log("model",value);
+//     if(value){
+//         this.otpSentOn = new Date()
+//         return value;
+//     }
 
+//     return "null";
+// }
 export const user = model<IUser>('users', userSchema);
