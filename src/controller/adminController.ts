@@ -7,7 +7,15 @@ const userRepo = ConnectDB.getRepository(USERS);
 const addUser = async (req: Request, res: Response, next :NextFunction) => {
     try {
         const { firstName, lastName, phoneNo, userType = 2 } = req.body;
-    
+        
+        const existingPhoneNo = await userRepo.findOneBy({
+            phoneNo:phoneNo
+        })
+
+        if(existingPhoneNo){
+            return next(new BackendError(500,"Number already exist"));
+        }
+        
         const result = await userRepo.save({
             firstName,
             lastName,
