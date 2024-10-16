@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "mongo-cli": "npx migrate-mongo"
   },
   "keywords": [],
   "author": "",
