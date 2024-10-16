@@ -26,13 +26,10 @@ const sendOTP = async (req: Request, res: Response, next: NextFunction) => {
         otpSentOn: new Date()
     });
 
-
-
-    response.token = token;
     res.status(200).json({
         status: "Success",
         message: "OTP sent successfully",
-        result: response,
+        result: token,
     });
 
 }
@@ -48,7 +45,13 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = verifyToken(token);
 
-        const response = await user.findById(id);
+        const response = await user.findById(id,"", {
+            select:{
+                createdAt:false,
+                updatedAt:false,
+                __v:false,
+            }
+        },);
 
         if (!response) {
             return next(new BackendError(500, "Unable to find user"));
@@ -63,13 +66,14 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             return next(new BackendError(400, "Wrong OTP"));
         }
 
-        const userToken = generateToken(response._id, "30d");
+        const userToken = generateToken(response._id, "365d");
 
         await user.findByIdAndUpdate(response._id, {
             token: userToken
         });
 
         response.token = userToken;
+        // delete response.otp;
         res.status(200).json({
             status: "Success",
             message: "Logged in successfully",

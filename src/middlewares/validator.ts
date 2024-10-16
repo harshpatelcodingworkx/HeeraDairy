@@ -11,7 +11,7 @@ const validate = (schema : Joi.Schema)=>{
             next();
             
         } catch (err : any) {
-            console.log("Err", err);
+            // console.log("Err", err);
             return next(new BackendError(422,err.message ));
         }
     }

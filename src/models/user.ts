@@ -9,6 +9,7 @@ interface IUser {
     otp: string,
     otpSentOn: Date,
     token: string,
+    userType:string
 }
 
 const userSchema = new Schema<IUser>({
@@ -40,6 +41,11 @@ const userSchema = new Schema<IUser>({
     token: {
         type: String,
         required: false,
+    },
+    userType:{
+        type:String,
+        enum:['0','1','2'], // 0->admin, 1-> manager, 2->user
+        required:true,
     }
 },
     {

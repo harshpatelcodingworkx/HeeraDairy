@@ -4,7 +4,9 @@ import mongoose from "mongoose";
 import { connectionOption, mongoConnectionUrl } from "./config/dbConnect";
 import adminRoute from "./routes/adminRoute";
 import loginRoute from "./routes/loginRoute";
+import productRoute from "./routes/productRoute";
 import { ErrorRequestHandler } from "./middlewares/errorHandler";
+
 
 
 const PORT: number = process.env.PORT ? Number(process.env.PORT) : 8000;
@@ -14,6 +16,7 @@ app.use(express.json());
 //route
 app.use("/api",loginRoute);
 app.use("/api",adminRoute);
+app.use("/api",productRoute);
 
 
 app.use(ErrorRequestHandler);
