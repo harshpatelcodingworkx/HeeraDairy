@@ -1,11 +1,6 @@
 import { model, Schema } from "mongoose";
+import { IProduct } from "../interfaces/appInterfaces";
 
-interface IProduct {
-    name: string,
-    image: string,
-    price: number,
-    quantityId: Schema.Types.ObjectId,
-}
 
 const productSchema = new Schema<IProduct>({
     name: {
@@ -17,19 +12,22 @@ const productSchema = new Schema<IProduct>({
         required: false,
     },
     price: {
-        type: Number,
+        type: String,
         required: true,
     },
     quantityId: {
         type: Schema.Types.ObjectId,
-        ref:'units',
+        ref:'units', 
         required: true,
     },
+    indexNumber:{
+        type:Number,
+        required:true,
+    }
 },
     {
         timestamps: true
     }
 );
-
 
 export const product = model<IProduct>('products', productSchema);

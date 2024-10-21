@@ -7,7 +7,7 @@ import { RequestType } from "../interfaces/appInterfaces";
 
 
 
-export const authUser = async (req: RequestType, res: Response, next: NextFunction) => {
+export const authUser = async (req: RequestType<unknown, unknown, unknown>, res: Response, next: NextFunction) => {
     try {
         const AuthHeaderToken = req.headers['authorization'];
 

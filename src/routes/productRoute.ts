@@ -1,5 +1,5 @@
 import express from 'express'
-import { addProduct, deleteProduct, editProduct, productList } from '../controllers/productController';
+import { addProduct, deleteProduct, dragAndDrop, editProduct, productList } from '../controllers/productController';
 import { authUser } from '../middlewares/auth';
 import { validate } from '../middlewares/validator';
 import { addProductSchema, editProductSchema } from '../schemas/validationSchema';
@@ -11,4 +11,5 @@ router.use(authUser);
 router.post("/addproduct",validate(addProductSchema),addProduct);
 router.put("/editproduct/:id",validate(editProductSchema),editProduct);
 router.delete("/deleteproduct/:id",deleteProduct);
+router.post("/draganddrop",dragAndDrop);
 export default router;
