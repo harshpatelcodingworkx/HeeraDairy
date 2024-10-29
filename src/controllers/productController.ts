@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { product } from "../models/product";
 import { BackendError } from "../middlewares/errorHandler";
 import { DocId, editProductData, IdragAndDrop, IProduct, pagination, RequestType } from "../interfaces/appInterfaces"
@@ -20,7 +20,6 @@ const addProduct = async (req: RequestType<IProduct, unknown, unknown>, res: Res
         return next(new BackendError(500, "Unable to add product"));
     }
 
-
     res.status(201).json({
         status: "Success",
         message: "Product added successfully",
@@ -29,31 +28,36 @@ const addProduct = async (req: RequestType<IProduct, unknown, unknown>, res: Res
 }
 
 
-const productList = async (req: Request, res: Response) => {
-    const { search, limit, page, sortby: sortBy = "indexNumber" }: pagination = req.query;
-    const sortOrder = req.query.sortorder === 'asc' ? 1 : -1; // by default descending order
-    const limits = limit ? Number(limit) : 5 // by limit = 5
-    const skip = page ? (Number(page) - 1) * limits : 0;
+const productList = async (req: RequestType<unknown, pagination, unknown>, res: Response) => {
+    try {
+        const { search, limit, page, sortby: sortBy = "indexNumber", sortorder } = req.query;
+        const sortOrder = sortorder === '1' ? 1 : -1; // by default descending order
+        const limits = limit ? Number(limit) : 5 // by limit = 5
+        const skip = page ? (Number(page) - 1) * limits : 0;
 
-    const searchRegex = new RegExp(search ? search : '', 'i');
-    const [products] = await product.aggregate([
-        {
-            $match: { name: { $regex: searchRegex } }
-        },
-        {
-            $facet: {
-                data: [{ $sort: { [sortBy]: sortOrder } }, { $skip: skip }, { $limit: limits }],
-                totalCount: [{ $count: "count" }]
+        const searchRegex = new RegExp(search ? search : '', 'i');
+        const [products] = await product.aggregate([
+            {
+                $match: { name: { $regex: searchRegex } }
+            },
+            {
+                $facet: {
+                    data: [{ $sort: { [sortBy]: sortOrder } }, { $skip: skip }, { $limit: limits }],
+                    totalCount: [{ $count: "count" }]
+                }
             }
-        }
-    ]);
+        ]);
+
+        res.status(200).json({
+            status: "Success",
+            totalProduct: products.totalCount,
+            result: products.data
+        });
+    } catch (err) {
+        console.log("Err from productList", err);
+    }
 
 
-    res.status(200).json({
-        status: "Success",
-        totalProduct: products.totalCount,
-        result: products.data
-    });
 }
 
 const editProduct = async (req: RequestType<editProductData, unknown, DocId>, res: Response, next: NextFunction) => {
@@ -94,14 +98,14 @@ const dragAndDrop = async (req: RequestType<unknown, IdragAndDrop, unknown>, res
     }
 
     let newIdx;
-    if(!nextProduct && preProduct){ // dropped at last 
-        newIdx = preProduct.indexNumber -  1000;
+    if (!nextProduct && preProduct) { // dropped at last 
+        newIdx = preProduct.indexNumber - 1000;
     }
-    else if(nextProduct && !preProduct){ // dropped at beginning
-        newIdx = nextProduct.indexNumber +  1000;
+    else if (nextProduct && !preProduct) { // dropped at beginning
+        newIdx = nextProduct.indexNumber + 1000;
     }
-    else if(nextProduct && preProduct){ // dropped in middle
-        newIdx = (preProduct.indexNumber + nextProduct.indexNumber) / 2 ;
+    else if (nextProduct && preProduct) { // dropped in middle
+        newIdx = (preProduct.indexNumber + nextProduct.indexNumber) / 2;
     }
 
     await product.findByIdAndUpdate(currentProductIdx, {

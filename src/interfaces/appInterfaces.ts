@@ -16,48 +16,49 @@ interface IUser {
 
 
 interface pagination {
-    search?: string,
-    page?: number,
-    limit?: number,
-    sortby?: string,
+    search: string | undefined,
+    page: number | undefined,
+    limit: number | undefined,
+    sortby: string | undefined,
+    sortorder: string | undefined ,
 }
 
 interface IdragAndDrop {
     preProductIdx: number,
-    currentProductIdx : number,
+    currentProductIdx: number,
     nextProductIdx: number,
 
 }
 
 interface DocId {
-    id : Schema.Types.ObjectId
+    id: Schema.Types.ObjectId
 }
 
 
 interface editProductData {
-    name :string,
-    image:string,
-    price:string
+    name: string,
+    image: string,
+    price: string
 }
 
 
-interface productData extends editProductData{
-    quantityId  : Schema.Types.ObjectId
+interface productData extends editProductData {
+    quantityId: Schema.Types.ObjectId
 }
 
 
-interface IProduct  extends productData{
+interface IProduct extends productData {
     indexNumber: number
 }
 
 interface base {
-    _id :Types.ObjectId,
-    __v? :number,
+    _id: Types.ObjectId,
+    __v?: number,
     createdAt: Date,
     updatedAt: Date,
 }
 
-interface dbProductData extends base ,IProduct {}
+interface dbProductData extends base, IProduct { }
 export {
     RequestType,
     IUser,
