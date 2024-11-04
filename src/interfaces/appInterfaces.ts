@@ -1,4 +1,6 @@
 import { Schema, Types } from "mongoose"
+import { Response } from "express"
+import { Application } from "twilio/lib/twiml/VoiceResponse"
 
 interface RequestType<T1, T2, T3> extends Express.Request {
 	body: T1
@@ -59,6 +61,19 @@ interface listUserInterface {
 	totalUsers: Array<{ count: number }>
 }
 
+interface returnRes {
+    status : string,
+    result? : object,
+    message?: string,
+}
+interface ResponseType<T1, T2> extends Response {
+	ResBody: T1
+	ResLocals: T2
+}
+
+interface myApplication<T1 , T2> extends Express.Application {
+	[prop: string]: any
+}
 export {
 	RequestType,
 	IUser,
@@ -70,4 +85,6 @@ export {
 	IProduct,
 	dbProductData,
 	listUserInterface,
+	ResponseType,
+	myApplication,
 }

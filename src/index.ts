@@ -1,33 +1,34 @@
-import express from "express";
-import 'dotenv/config';
-import mongoose from "mongoose";
-import { connectionOption, mongoConnectionUrl } from "./config/dbConnect";
-import adminRoute from "./routes/adminRoute";
-import loginRoute from "./routes/loginRoute";
-import productRoute from "./routes/productRoute";
-import { ErrorRequestHandler } from "./middlewares/errorHandler";
+import express from "express"
+import "dotenv/config"
+import mongoose from "mongoose"
+import { connectionOption, mongoConnectionUrl } from "./config/dbConnect"
+import adminRoute from "./routes/adminRoute"
+import loginRoute from "./routes/loginRoute"
+import productRoute from "./routes/productRoute"
+import userRoute from "./routes/userRoute"
+import { ErrorRequestHandler, myAppError } from "./middlewares/errorHandler"
+import { myApplication } from "./interfaces/appInterfaces"
 
-
-
-const PORT: number = process.env.PORT ? Number(process.env.PORT) : 8000;
-const app = express();  
-app.use(express.json());
+const PORT: number = process.env.PORT ? Number(process.env.PORT) : 8000
+const app: myApplication<unknown, unknown> = express()
+app.use(express.json())
 
 //route
-app.use("/api",loginRoute);
-app.use("/api",adminRoute);
-app.use("/api",productRoute);
+app.use("/api", loginRoute)
+app.use("/api", adminRoute)
+app.use("/api", userRoute)
+app.use("/api", productRoute)
 
+app.use(ErrorRequestHandler)
 
-app.use(ErrorRequestHandler);
-
-mongoose.connect(mongoConnectionUrl,connectionOption)
-.then(()=>{
-    console.log("Database Connected");
-    app.listen(PORT, () => {
-        console.log("Server running at ", PORT); 
-    })
-})
-.catch((err)=>{
-    console.log("Err DB->", err);
-})
+mongoose
+	.connect(mongoConnectionUrl, connectionOption)
+	.then(() => {
+		console.log("Database Connected")
+		app.listen(PORT, () => {
+			console.log("Server running at ", PORT)
+		})
+	})
+	.catch((err) => {
+		console.log("Err DB->", err)
+	})
