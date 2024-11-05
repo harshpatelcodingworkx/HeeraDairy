@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from "express"
 import { user } from "../models/user"
 import { BackendError } from "../middlewares/errorHandler"
 import {
+	entryInterface,
 	listUserInterface,
 	pagination,
 	RequestType,
 } from "../interfaces/appInterfaces"
-import { constants } from "buffer"
+import entry from "../models/entries"
+import { unit } from "../models/units"
 
 const addUser = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -76,4 +78,38 @@ const listUsers = async (
 	})
 }
 
-export { addUser, listUsers }
+const addEntries = async (
+	req: RequestType<Array<entryInterface>, unknown, unknown>,
+	res: Response,
+	next: NextFunction
+) => {
+	if (req.user.userType === "2") {
+		return next(new BackendError(400, "Unauthorized"))
+	}
+
+	req.body.forEach((entry) => {
+		entry.createdBy = req.user.userType
+	})
+
+	const entries = await entry.insertMany(req.body)
+
+	res.status(200).json({
+		status: "Status",
+		message: "Entries added successfully",
+		result: entries,
+	})
+}
+
+const addUnits = async (req: Request, res: Response, next: NextFunction) => {
+	const response = await unit.insertMany(req.body)
+
+	if (!response) {
+		return next(new BackendError(500, "unable to add units"))
+	}
+	res.status(200).json({
+		status: "success",
+		message: "Units added successfully",
+	})
+}
+
+export { addUser, listUsers, addEntries, addUnits }

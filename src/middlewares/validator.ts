@@ -8,7 +8,7 @@ import { RequestType } from "../interfaces/appInterfaces";
 const validate = (schema: Joi.Schema) => {
     return async (req: RequestType<unknown, unknown, unknown>, res: Response, next: NextFunction) => {
         try {
-            await schema.validateAsync(req);
+            await schema.validateAsync(req.body);
             next();
 
         } catch (err: any) {

@@ -17,6 +17,7 @@ export const authUser = async (req: RequestType<unknown, unknown, unknown>, res:
             return next(new BackendError(500, "Token not provided"));
         }
 
+
         const { id } = verifyToken(token);
         const userById = await user.findById(id, "", {
             select: {

@@ -1,6 +1,5 @@
 import { Schema, Types } from "mongoose"
 import { Response } from "express"
-import { Application } from "twilio/lib/twiml/VoiceResponse"
 
 interface RequestType<T1, T2, T3> extends Express.Request {
 	body: T1
@@ -62,18 +61,32 @@ interface listUserInterface {
 }
 
 interface returnRes {
-    status : string,
-    result? : object,
-    message?: string,
+	status: string
+	result?: object
+	message?: string
 }
 interface ResponseType<T1, T2> extends Response {
 	ResBody: T1
 	ResLocals: T2
 }
 
-interface myApplication<T1 , T2> extends Express.Application {
+interface myApplication<T1, T2> extends Express.Application {
 	[prop: string]: any
 }
+
+interface entryInterface {
+	productId: Types.ObjectId
+	quantity: number
+	dataOfPurchasing: Date
+	userId: Types.ObjectId
+	createdBy: string
+}
+
+
+interface unitInterface{
+	unitName :string,
+}
+
 export {
 	RequestType,
 	IUser,
@@ -85,6 +98,8 @@ export {
 	IProduct,
 	dbProductData,
 	listUserInterface,
+	unitInterface,
 	ResponseType,
 	myApplication,
+	entryInterface,
 }

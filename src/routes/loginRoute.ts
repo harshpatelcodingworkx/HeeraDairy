@@ -6,4 +6,5 @@ const router = express.Router();
 
 router.post("/sendotp",validate(sendOTPSchema),sendOTP);
 router.post("/login",validate(verifyOTPSchema),login);
+
 export default router;

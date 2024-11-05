@@ -39,6 +39,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const token = beareToken?.split(" ")[1];
     const userOTP = req.body.otp;
 
+    
     if (!token) {
         return next(new BackendError(500, "Token not provided"));
     }
